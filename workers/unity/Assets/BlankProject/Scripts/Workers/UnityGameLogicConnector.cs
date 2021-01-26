@@ -8,26 +8,24 @@ using UnityEngine;
 
 namespace BlankProject
 {
-    public class UnityGameLogicConnector : WorkerConnector
-    {
+    public class UnityGameLogicConnector : WorkerConnector{
         [SerializeField] private EntityRepresentationMapping entityRepresentationMapping = default;
+        [SerializeField] private GameObject level;
 
         public const string WorkerType = "UnityGameLogic";
+        private GameObject levelInstance;
 
-        private async void Start()
-        {
+        private async void Start(){
             PlayerLifecycleConfig.CreatePlayerEntityTemplate = EntityTemplates.CreatePlayerEntityTemplate;
 
             IConnectionFlow flow;
             ConnectionParameters connectionParameters;
 
-            if (Application.isEditor)
-            {
+            if (Application.isEditor){
                 flow = new ReceptionistFlow(CreateNewWorkerId(WorkerType));
                 connectionParameters = CreateConnectionParameters(WorkerType);
             }
-            else
-            {
+            else{
                 flow = new ReceptionistFlow(CreateNewWorkerId(WorkerType),
                     new CommandLineConnectionFlowInitializer());
                 connectionParameters = CreateConnectionParameters(WorkerType,
@@ -41,11 +39,26 @@ namespace BlankProject
             await Connect(builder, new ForwardingDispatcher()).ConfigureAwait(false);
         }
 
-        protected override void HandleWorkerConnectionEstablished()
-        {
+        protected override void HandleWorkerConnectionEstablished(){
             Worker.World.GetOrCreateSystem<MetricSendSystem>();
             PlayerLifecycleHelper.AddServerSystems(Worker.World);
             GameObjectCreationHelper.EnableStandardGameObjectCreation(Worker.World, entityRepresentationMapping);
+
+            // if no level make one....
+            if (level == null){
+                return;
+            }
+
+            levelInstance = Instantiate(level, transform.position, transform.rotation);
+        }
+
+        public override void Dispose(){
+            
+            if (levelInstance != null){
+                Destroy(levelInstance);
+            }
+
+            base.Dispose();
         }
     }
 }

@@ -5,26 +5,24 @@ using Improbable.Gdk.GameObjectCreation;
 using Improbable.Gdk.PlayerLifecycle;
 using UnityEngine;
 
-namespace BlankProject
-{
-    public class UnityClientConnector : WorkerConnector
-    {
+namespace BlankProject{
+    public class UnityClientConnector : WorkerConnector{
         [SerializeField] private EntityRepresentationMapping entityRepresentationMapping = default;
+        [SerializeField] private GameObject level;
 
         public const string WorkerType = "UnityClient";
 
-        private async void Start()
-        {
+        private GameObject levelInstance;
+        private async void Start(){
+            
             var connParams = CreateConnectionParameters(WorkerType);
 
             var builder = new SpatialOSConnectionHandlerBuilder()
                 .SetConnectionParameters(connParams);
 
-            if (!Application.isEditor)
-            {
+            if (!Application.isEditor){
                 var initializer = new CommandLineConnectionFlowInitializer();
-                switch (initializer.GetConnectionService())
-                {
+                switch (initializer.GetConnectionService()){
                     case ConnectionService.Receptionist:
                         builder.SetConnectionFlow(new ReceptionistFlow(CreateNewWorkerId(WorkerType), initializer));
                         break;
@@ -35,18 +33,30 @@ namespace BlankProject
                         throw new ArgumentOutOfRangeException();
                 }
             }
-            else
-            {
+            else{
                 builder.SetConnectionFlow(new ReceptionistFlow(CreateNewWorkerId(WorkerType)));
             }
 
             await Connect(builder, new ForwardingDispatcher()).ConfigureAwait(false);
         }
 
-        protected override void HandleWorkerConnectionEstablished()
-        {
+        protected override void HandleWorkerConnectionEstablished(){
             PlayerLifecycleHelper.AddClientSystems(Worker.World);
             GameObjectCreationHelper.EnableStandardGameObjectCreation(Worker.World, entityRepresentationMapping);
+
+            // if no level make one....
+            if (level == null){
+                return;
+            }
+            levelInstance = Instantiate(level, transform.position, transform.rotation);
+        }
+        
+        public override void Dispose(){
+            if (levelInstance != null){
+                Destroy(levelInstance);
+            }
+
+            base.Dispose();
         }
     }
 }
