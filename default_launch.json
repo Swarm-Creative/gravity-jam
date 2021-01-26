@@ -1,0 +1,59 @@
+{
+  "template": "n1standard2_std40_r0500",
+  "world": {
+    "chunkEdgeLengthMeters": 50,
+    "snapshots": {
+      "snapshotWritePeriodSeconds": 0
+    },
+    "dimensions": {
+      "xMeters": 5000,
+      "zMeters": 5000
+    },
+    "legacy_flags": [
+      {
+        "name": "interest_queries_components_are_filtered_by_component_delivery",
+        "value": "false"
+      }
+    ]
+  },
+  "load_balancing": {
+    "layer_configurations": [
+      {
+        "layer": "UnityGameLogic",
+        "rectangle_grid": {
+          "cols": 1,
+          "rows": 1
+        },
+        "options": {
+          "manual_worker_connection_only": true
+        }
+      }
+    ]
+  },
+  "workers": [
+    {
+      "worker_type": "UnityGameLogic",
+      "permissions": [
+        {
+          "all": {}
+        }
+      ]
+    },
+    {
+      "worker_type": "UnityClient",
+      "permissions": [
+        {
+          "all": {}
+        }
+      ]
+    },
+    {
+      "worker_type": "MobileClient",
+      "permissions": [
+        {
+          "all": {}
+        }
+      ]
+    }
+  ]
+}
