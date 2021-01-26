@@ -4,6 +4,7 @@ using Improbable.Gdk.Core.Representation;
 using Improbable.Gdk.GameObjectCreation;
 using Improbable.Gdk.Mobile;
 using Improbable.Gdk.PlayerLifecycle;
+using Scripts.Worker;
 using UnityEngine;
 
 namespace BlankProject
@@ -49,7 +50,8 @@ namespace BlankProject
         protected override void HandleWorkerConnectionEstablished()
         {
             PlayerLifecycleHelper.AddClientSystems(Worker.World);
-            GameObjectCreationHelper.EnableStandardGameObjectCreation(Worker.World, entityRepresentationMapping);
+            var gameObjectCreator = new GameObjectCreatorFromTransform(WorkerType, transform.position);
+            GameObjectCreationHelper.EnableStandardGameObjectCreation(Worker.World, gameObjectCreator, entityRepresentationMapping);
         }
 
         public Option<string> GetReceptionistHostIp()

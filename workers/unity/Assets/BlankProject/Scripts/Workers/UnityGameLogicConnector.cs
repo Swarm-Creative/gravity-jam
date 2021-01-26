@@ -4,6 +4,8 @@ using Improbable.Gdk.Core.Representation;
 using Improbable.Gdk.GameObjectCreation;
 using Improbable.Gdk.PlayerLifecycle;
 using Improbable.Worker.CInterop;
+using Improbable.Gdk.TransformSynchronization;
+using Scripts.Worker;
 using UnityEngine;
 
 namespace BlankProject
@@ -42,8 +44,9 @@ namespace BlankProject
         protected override void HandleWorkerConnectionEstablished(){
             Worker.World.GetOrCreateSystem<MetricSendSystem>();
             PlayerLifecycleHelper.AddServerSystems(Worker.World);
-            GameObjectCreationHelper.EnableStandardGameObjectCreation(Worker.World, entityRepresentationMapping);
-
+            var gameObjectCreator = new GameObjectCreatorFromTransform(WorkerType, transform.position);
+            GameObjectCreationHelper.EnableStandardGameObjectCreation(Worker.World, gameObjectCreator, entityRepresentationMapping);
+            TransformSynchronizationHelper.AddServerSystems(Worker.World);
             // if no level make one....
             if (level == null){
                 return;
