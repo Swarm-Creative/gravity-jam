@@ -13,16 +13,19 @@ MonoBehaviour:
   m_Name: DeploymentLauncherConfig
   m_EditorClassIdentifier: 
   AssemblyConfig:
-    ProjectName: unity_gdk
-    AssemblyName: blank_assembly
+    ProjectName: beta_timing_twelve_180
+    AssemblyName: beta_timing_twelve_180_0126_2240
     ShouldForceUpload: 0
   DeploymentConfigs:
-  - ProjectName: unity_gdk
-    AssemblyName: blank_assembly
+  - ProjectName: beta_timing_twelve_180
+    AssemblyName: beta_timing_twelve_180_0126_2240
     Deployment:
-      Name: blank_deployment
+      Name: deployment_0
       SnapshotPath: snapshots/default.snapshot
       LaunchJson: cloud_launch.json
-      Region: 1
-      Tags: []
+      Region: 0
+      Cluster: 
+      DeploymentLocationType: 0
+      Tags:
+      - prealpha
     SimulatedPlayerDeploymentConfigs: []
