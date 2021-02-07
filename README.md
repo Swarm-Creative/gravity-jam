@@ -1,6 +1,4 @@
 <div align="center">
-  <img src="./.github/readme-header.png" width="450" />
-
   <h1>Gravity Jam</h1>
 
   <p>
